@@ -1,0 +1,30 @@
+{
+    "name": "Gisty",
+    "version": "1.0",
+    "manifest_version": 2,
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "app.js",
+                "perms.js",
+                "auth.js"
+            ]
+        }
+    ],
+    "browser_action": {
+        "default_popup": "login.html",
+        "default_title": "Gsum"
+    },
+    "permissions": [
+        "activeTab",
+        "tabs",
+        "pageCapture",
+        "storage",
+        "ttsEngine",
+        "contextMenus",
+        "notifications"
+    ]
+}

@@ -1,0 +1,10 @@
+/* body{
+    background-color: #222222;
+    color:rgb(93,205,136);
+}
+input{
+    background-color: inherit;
+}
+input::placeholder{
+    color:rgb(93,205,136);
+} */
