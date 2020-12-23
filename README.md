@@ -1,0 +1,1 @@
+## A chrome extension to capture captions of google meet and convert voice to text using webkitspeechrecognition api for meets other than google meet. It also includes flask api for summarzing the text and sending the summarized text to the backend.
