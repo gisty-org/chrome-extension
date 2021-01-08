@@ -6,4 +6,5 @@
 3) Click on load unpacked and browse to the folder where the project lies
 4) Copy the ID generated and replace it with CHROME_EXTENSION_ID in global.js file.
 5) Click on the refresh button of the extension tile. 
-6) Enjoi using the extension :)
+
+*Enjoi using the extension :yum:*
