@@ -82,6 +82,7 @@ function get_host_name() {
 
 start_button.addEventListener("click", async function () {
   localStorage.setItem("images", JSON.stringify([]));
+  localStorage.setItem("meet-data", " ");
   await chrome.tabs.executeScript(
     null,
     { code: "(" + get_host_name + ")();" },
@@ -120,7 +121,7 @@ submit_button.addEventListener("click", function (e) {
   // const transcript_data = localStorage.getItem('current_session');
   if (is_google_meet) {
     catch_meet = false;
-    transcript_data = google_meet_transcript_data;
+    transcript_data = localStorage.getItem("google-meet-data");
   }
   const urlParams = {
     subject_name: subject_name,
@@ -156,13 +157,9 @@ stop_button.addEventListener("click", function (e) {
   if (!is_google_meet) toggleSpeechRecognition();
   else {
     recognizing = false;
+    catch_meet = false;
     stop_button.style.display = "none";
     resume_button.style.display = "inline-block";
-  }
-
-  if (is_google_meet) {
-    catch_meet = false;
-    transcript_data = google_meet_transcript_data;
   }
 });
 
@@ -171,14 +168,10 @@ resume_button.addEventListener("click", function (e) {
   if (!is_google_meet) toggleSpeechRecognition();
   else {
     recognizing = true;
+    catch_meet = true;
     stop_button.style.display = "inline-block";
     resume_button.style.display = "none";
     console.log("resume");
-  }
-
-  if (is_google_meet) {
-    catch_meet = true;
-    transcript_data = google_meet_transcript_data;
   }
   start_fetching_meet();
 });
