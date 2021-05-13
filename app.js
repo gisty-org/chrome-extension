@@ -293,10 +293,3 @@ function refresh(event) {
     recognition.start();
   } catch (e) {}
 }
-
-function acknowledgeSSSuccess() {
-  ss.style.backgroundColor = "green";
-  setTimeout(3000, () => {
-    ss.style.backgroundColor = null;
-  });
-}
