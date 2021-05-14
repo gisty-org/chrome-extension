@@ -127,6 +127,7 @@ submit_button.addEventListener("click", function (e) {
     subject_name: subject_name,
     lecture_name: lecture_name,
     transcript: localStorage.getItem("meet-data"),
+    user_id: JSON.parse(localStorage.getItem("user")).userId,
     email:
       (JSON.parse(localStorage.getItem("user")) &&
         JSON.parse(localStorage.getItem("user")).email) ||
