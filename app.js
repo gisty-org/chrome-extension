@@ -127,6 +127,7 @@ submit_button.addEventListener("click", function (e) {
     subject_name: subject_name,
     lecture_name: lecture_name,
     transcript: localStorage.getItem("meet-data"),
+    user_id: JSON.parse(localStorage.getItem("user")).userId,
     email:
       (JSON.parse(localStorage.getItem("user")) &&
         JSON.parse(localStorage.getItem("user")).email) ||
@@ -292,11 +293,4 @@ function refresh(event) {
   try {
     recognition.start();
   } catch (e) {}
-}
-
-function acknowledgeSSSuccess() {
-  ss.style.backgroundColor = "green";
-  setTimeout(3000, () => {
-    ss.style.backgroundColor = null;
-  });
 }
