@@ -26,5 +26,9 @@
         "ttsEngine",
         "contextMenus",
         "notifications"
-    ]
+    ],
+    "background":{
+        "scripts":["app.js"],
+        "persistent":true
+    }
 }

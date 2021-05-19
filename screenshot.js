@@ -4,6 +4,7 @@ var CLOUDINARY_UPLOAD_PRESET = "ksx2b0v2";
 const canIRun = navigator.mediaDevices.getDisplayMedia;
 
 function acknowledgeSSSuccess() {
+  var ss = document.getElementById("ss");
   ss.style.display = "none";
   ss_in.style.display = "inline-block";
   setTimeout(() => {

@@ -3,6 +3,7 @@ var start_button = document.getElementById("start");
 var stop_button = document.getElementById("stop");
 var resume_button = document.getElementById("resume");
 var ss_button = document.getElementById("ss");
+var clear_button = document.getElementById("clear");
 var is_google_meet = false;
 var spanClassName = "CNusmb";
 var div = document.getElementById("span_text");
@@ -10,8 +11,19 @@ var idx = 1;
 var catch_meet = false;
 var google_meet_transcript_data = "";
 var take_snapshot = false;
+var turned_on_captions_flag = false;
 
-function get_data() {
+function get_data(turned_on_captions_flag) {
+  var turnOnMeetCaptionsClass = "I98jWb";
+  console.log("TOCF:",turned_on_captions_flag);
+  if(turned_on_captions_flag == true){
+    var turnOnMeetCaptionsDiv = document.getElementsByClassName(turnOnMeetCaptionsClass);
+    if(turnOnMeetCaptionsDiv.length == 0){
+      // alert("Please Turn On your Captions for Recording");
+    }else{
+      turnOnMeetCaptionsDiv[0].click();
+    }
+  }
   //console.log('came here');
   var idx = 1;
   var spans = document.getElementsByClassName("CNusmb");
@@ -21,11 +33,12 @@ function get_data() {
   for (let i = 0; i < spans.length; i++) {
     console.log(spans[i].innerText, spans[i].classList.contains("from-cs"));
     if (!spans[i].classList.contains("from-cs")) {
-      var text = spans[i].innerText;
+      spans[i].classList.add("from-cs");
+      var text = spans[i].innerText.toLowerCase();
       var res = text.split(" ");
       //console.log(res);
       for (let i = 0; i < res.length; i++) {
-        if (res[i] == "take" || res[i] == "Take") {
+        if (res[i] == "take") {
           if (
             i != res.length - 1 &&
             (res[i + 1] == "snapshot" || res[i + 1] == "snapshot.")
@@ -39,7 +52,6 @@ function get_data() {
       global_text += " ";
       // console.log(text);
       // div.textContent += text;
-      spans[i].classList.add("from-cs");
     }
   }
   return { text: global_text, flag: take_snapshot };
@@ -53,12 +65,14 @@ function start_fetching_meet() {
     setTimeout(() => {
       chrome.tabs.executeScript(
         null,
-        { code: "(" + get_data + ")();" },
+        { code: "(" + get_data + ")("+turned_on_captions_flag+");" },
         (results) => {
           // console.log('FUN RES');
           // console.log(results);
           // div.innerText += " ";
           // div.innerText += results;
+          
+          turned_on_captions_flag = false;
           google_meet_transcript_data += " ";
           google_meet_transcript_data += results[0].text;
           localStorage.setItem("meet-data", google_meet_transcript_data);
@@ -80,9 +94,26 @@ function get_host_name() {
   return window.location.host;
 }
 
-start_button.addEventListener("click", async function () {
-  localStorage.setItem("images", JSON.stringify([]));
-  localStorage.setItem("meet-data", " ");
+if(localStorage.getItem('meet-data-store')=="true"){
+  document.getElementById("subject_name").value = localStorage.getItem('meet-name');
+  document.getElementById("lecture_name").value = localStorage.getItem('meet-topic');
+  document.getElementById("num_lines").value = localStorage.getItem('meet-lines');
+  start_helper();
+}
+
+async function start_helper(){
+  if(localStorage.getItem('meet-data-store') == null || localStorage.getItem("meet-data-store")==false){
+    localStorage.setItem("images", JSON.stringify([]));
+    localStorage.setItem("meet-data", " ");
+  }
+  //keep it waiting
+  localStorage.setItem('meet-data-store',true);
+  const subject_name = document.getElementById("subject_name").value;
+  const lecture_name = document.getElementById("lecture_name").value;
+  const num_lines = document.getElementById("num_lines").value;
+  localStorage.setItem('meet-name',subject_name);
+  localStorage.setItem('meet-topic',lecture_name);
+  localStorage.setItem('meet-lines',num_lines);
   await chrome.tabs.executeScript(
     null,
     { code: "(" + get_host_name + ")();" },
@@ -94,21 +125,29 @@ start_button.addEventListener("click", async function () {
       }
       if (is_google_meet) {
         catch_meet = true;
+        turned_on_captions_flag = true;
         console.log("starting recording...");
         submit_button.style.display = "inline-block";
+        stop_button.style.display = "inline-block";
         start_button.style.display = "none";
         start_fetching_meet();
       } else toggleSpeechRecognition();
     }
   );
+}
+start_button.addEventListener("click", async function () {
+  start_helper();
 });
 
 submit_button.addEventListener("click", function (e) {
+  localStorage.setItem('meet-data-store',false);
   e.preventDefault();
   if (!is_google_meet) toggleSpeechRecognition();
   else {
     recognizing = false;
     submit_button.style.display = "none";
+    stop_button.style.display = "none";
+    resume_button.style.display = "none";
     start_button.style.display = "inline-block";
   }
   const req = new XMLHttpRequest();
@@ -177,6 +216,10 @@ resume_button.addEventListener("click", function (e) {
   start_fetching_meet();
 });
 
+clear_button.addEventListener('click',function(){
+  localStorage.setItem('meet-data-store',false);
+})
+
 var recognizing = false;
 var recognition = new webkitSpeechRecognition();
 var transcript_data = [];
@@ -222,7 +265,7 @@ recognition.onresult = function (event) {
         var res = text.split(" ");
         for (let i = 0; i < res.length; i++) {
           if (res[i] == "take") {
-            if (i != res.length - 1 && res[i + 1] == "snapshot") {
+            if (i != res.length - 1 && (res[i + 1] == "snapshot" || res[i+1]=="snapshot.")) {
               takeScreenShot();
               acknowledgeSSSuccess();
             }
@@ -237,6 +280,7 @@ function toggleSpeechRecognition(event) {
   if (recognizing) {
     recognition.stop();
     submit_button.style.display = "none";
+    stop_button.style.display = "inline-block";
     start_button.style.display = "inline-block";
     return;
   } else {

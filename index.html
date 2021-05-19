@@ -75,17 +75,22 @@
       <input
         type="number"
         id="num_lines"
+        value="5"
+        min="1"
         placeholder="No. of lines"
         name="No. of lines"
       />
       <label for="lecture_name"></label>
     </div>
     <input type="text" id="transcript" style="display: none" />
-    <button id="stop" class="btn" style="margin-bottom: 10px">Stop</button>
+    <button id="stop" class="btn" style="display:none; margin-bottom: 10px">Stop</button>
     <button id="resume" style="display: none; margin-bottom: 10px" class="btn">
       Resume
     </button>
     <button id="start" class="btn" style="margin-bottom: 10px">Start</button>
+    <button id="clear" style="margin-bottom: 10px" class="btn">
+      Clear
+    </button>
     <button id="submit" style="display: none; margin-bottom: 10px" class="btn">
       Submit
     </button>
